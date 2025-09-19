@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:laptop_harbor/Screens/loginscreen.dart';
+import 'package:laptop_harbor/Widgets/appbar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -57,7 +58,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("LaptopHarbor")),
+      appBar: AppBarWidget(),
       body: const Center(child: Text("Welcome to Home Screen")),
     );
   }
