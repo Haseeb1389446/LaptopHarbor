@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:laptop_harbor/Screens/cards.dart';
-import 'package:laptop_harbor/Screens/loginscreen.dart';
+import 'package:laptop_harbor/Screens/home.dart';
+import 'package:laptop_harbor/Screens/login.dart';
 import 'package:laptop_harbor/Widgets/appbar.dart';
 import 'package:laptop_harbor/Widgets/bottomnavigationbar.dart';
 
@@ -61,7 +61,8 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWidget(),
-      body: HomeScreen(),
+      drawer: AppDrawer(),
+      body: HomeContent(),
       bottomNavigationBar: BottomnavigationbarWidget(currentIndex: 0,),
     );
   }

@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:laptop_harbor/Screens/profile.dart';
 import 'package:laptop_harbor/Screens/search.dart';
+import 'package:laptop_harbor/Screens/setting.dart';
 import 'package:laptop_harbor/main.dart';
 
 class BottomnavigationbarWidget extends StatelessWidget {
@@ -10,6 +12,7 @@ class BottomnavigationbarWidget extends StatelessWidget {
 
   static final List<Widget> screens = [
     const HomeScreen(),
+    const SearchScreen(),
     const ProfileScreen(),
     const SettingScreen(),
   ];
@@ -24,13 +27,14 @@ class BottomnavigationbarWidget extends StatelessWidget {
       type: BottomNavigationBarType.fixed,
       onTap: (value) {
         if (value != currentIndex) {
-          Navigator.of(context).pushReplacement(
+          Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => screens[value]),
           );
         }
       },
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+        BottomNavigationBarItem(icon: Icon(CupertinoIcons.search), label: 'Search'),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
       ],
