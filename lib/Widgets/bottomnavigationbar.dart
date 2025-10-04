@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:laptop_harbor/Screens/brands.dart';
 import 'package:laptop_harbor/Screens/profile.dart';
 import 'package:laptop_harbor/Screens/search.dart';
 import 'package:laptop_harbor/Screens/setting.dart';
@@ -13,8 +14,8 @@ class BottomnavigationbarWidget extends StatelessWidget {
   static final List<Widget> screens = [
     const HomeScreen(),
     const SearchScreen(),
+    const BrandsScreen(),
     const ProfileScreen(),
-    const SettingScreen(),
   ];
 
   @override
