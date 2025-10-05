@@ -1,8 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:laptop_harbor/Screens/login.dart';
 
 class SignupScreen extends StatelessWidget {
-  const SignupScreen({super.key});
+  SignupScreen({super.key});
+
+  final formKey = GlobalKey<FormState>();
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +48,7 @@ class SignupScreen extends StatelessWidget {
 
               // Full Name
               TextField(
+                controller: nameController,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.person, color: Color(0xFF062245)),
                   hintText: "Full Name",
@@ -61,6 +71,7 @@ class SignupScreen extends StatelessWidget {
 
               // Email
               TextField(
+                controller: emailController,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.email, color: Color(0xFF062245)),
                   hintText: "Email",
@@ -83,6 +94,7 @@ class SignupScreen extends StatelessWidget {
 
               // Password
               TextField(
+                controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.lock, color: Color(0xFF062245)),

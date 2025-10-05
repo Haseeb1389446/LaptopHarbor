@@ -1,11 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:laptop_harbor/Screens/home.dart';
 import 'package:laptop_harbor/Screens/login.dart';
 import 'package:laptop_harbor/Widgets/appbar.dart';
 import 'package:laptop_harbor/Widgets/bottomnavigationbar.dart';
+import 'package:laptop_harbor/firebase_options.dart';
 
 void main() {
-  
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 

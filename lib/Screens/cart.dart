@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:laptop_harbor/Widgets/bottomnavigationbar.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -138,6 +139,7 @@ class _CartScreenState extends State<CartScreen> {
           ),
         ],
       ),
+      bottomNavigationBar: BottomnavigationbarWidget(currentIndex: 2),
     );
   }
 }

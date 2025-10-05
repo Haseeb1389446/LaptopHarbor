@@ -89,7 +89,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomnavigationbarWidget(currentIndex: 1),
+      bottomNavigationBar: BottomnavigationbarWidget(currentIndex: 0),
     );
   }
 
