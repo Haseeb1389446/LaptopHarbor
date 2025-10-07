@@ -1,14 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:laptop_harbor/Screens/home.dart';
 import 'package:laptop_harbor/Screens/login.dart';
-import 'package:laptop_harbor/Widgets/appbar.dart';
-import 'package:laptop_harbor/Widgets/bottomnavigationbar.dart';
 import 'package:laptop_harbor/firebase_options.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform).then((res){
+    print("Firebase Connected Successfully");
+  }).catchError((err){
+    print("The error is $err");
+  });
   runApp(const MyApp());
 }
 
@@ -38,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (context) => LoginScreen()),
       );
     });
   }
@@ -54,20 +55,6 @@ class _SplashScreenState extends State<SplashScreen> {
           width: 230,
         ),
       ),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarWidget(),
-      drawer: AppDrawer(),
-      body: HomeContent(),
-      bottomNavigationBar: BottomnavigationbarWidget(currentIndex: 0,),
     );
   }
 }

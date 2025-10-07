@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:laptop_harbor/Screens/cart.dart';
+import 'package:laptop_harbor/Screens/login.dart';
 import 'package:laptop_harbor/Screens/order.dart';
 import 'package:laptop_harbor/Screens/profile.dart';
 import 'package:laptop_harbor/Screens/search.dart';
@@ -7,7 +9,7 @@ import 'package:laptop_harbor/Screens/setting.dart';
 import 'package:laptop_harbor/Screens/wishlist.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
-  const AppBarWidget({super.key});
+  AppBarWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +48,13 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 
 /// ✅ Drawer Widget (Menu)
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({super.key});
+ AppDrawer({super.key});
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
+  final User? user = _auth.currentUser;
     return Drawer(
       clipBehavior: Clip.none,
       child: ListView(
@@ -58,8 +63,10 @@ class AppDrawer extends StatelessWidget {
           // 🔹 Drawer Header
           UserAccountsDrawerHeader(
             decoration: const BoxDecoration(color: Color(0xFF062245)),
-            accountName: const Text("Abdul Haseeb", style: TextStyle(fontSize: 18)),
-            accountEmail: const Text("haseeb@example.com"),
+            // accountName: Text(user?.displayName ?? "No Name" , style: TextStyle(fontSize: 18)),
+            // accountEmail: Text(user?.email ?? "No Email"),
+            accountName: Text("Abdul Haseeb"),
+            accountEmail: Text("haseeb@gmail.com"),
             currentAccountPicture: const CircleAvatar(
               backgroundColor: Colors.white,
               child: Icon(Icons.person, size: 40, color: Color(0xFF062245)),
@@ -109,7 +116,12 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text("Logout", style: TextStyle(color: Colors.red)),
             onTap: () {
-              // logout logic
+              _auth.signOut().then((res){
+               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${user?.displayName} logout successfully")));
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen(),));
+              }).catchError((err){
+               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("The Error is $err")));
+              });
             },
           ),
         ],

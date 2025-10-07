@@ -2,15 +2,17 @@ import 'dart:async';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:laptop_harbor/Screens/productdetails.dart';
+import 'package:laptop_harbor/Widgets/appbar.dart';
+import 'package:laptop_harbor/Widgets/bottomnavigationbar.dart';
 
-class HomeContent extends StatefulWidget {
-  const HomeContent({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<HomeContent> createState() => _HomeContentState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeContentState extends State<HomeContent> {
+class _HomeScreenState extends State<HomeScreen> {
   // For carousel
   final List<String> banners = [
     'assets/images/banner1.png',
@@ -20,10 +22,10 @@ class _HomeContentState extends State<HomeContent> {
 
   // For brands (use small logos)
   final List<Map<String, String>> brands = [
-    {'name': 'Dell', 'img': 'assets/images/dell.png'},
-    {'name': 'HP', 'img': 'assets/images/hp.png'},
-    {'name': 'Apple', 'img': 'assets/images/apple.png'},
-    {'name': 'Lenovo', 'img': 'assets/images/lenovo.png'},
+    {'name': 'Dell', 'img': 'assets/images/dell.jpg'},
+    {'name': 'HP', 'img': 'assets/images/hp.jpg'},
+    {'name': 'Apple', 'img': 'assets/images/apple.jpg'},
+    {'name': 'Lenovo', 'img': 'assets/images/lenovo.jpg'},
     // add more...
   ];
 
@@ -118,374 +120,385 @@ class _HomeContentState extends State<HomeContent> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // HERO / Carousel + CTA
-          CarouselSlider(
-            options: CarouselOptions(
-              height: 190,
-              autoPlay: true,
-              enlargeCenterPage: true,
-              viewportFraction: 1.1, // thoda space dono sides me
-              autoPlayCurve: Curves.easeInOut,
-              autoPlayAnimationDuration: const Duration(seconds: 2),
-            ),
-            items: banners.map((path) {
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Image.asset(
-                        path,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
-                          color: Colors.grey[300],
-                          child: const Icon(
-                            Icons.image,
-                            size: 60,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                      // 🔹 Gradient overlay for elegant look
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.black.withOpacity(0.4),
-                              Colors.transparent,
-                              Colors.black.withOpacity(0.2),
-                            ],
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                          ),
-                        ),
+    return Scaffold(
+      appBar: AppBarWidget(),
+      drawer: AppDrawer(),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // HERO / Carousel + CTA
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 190,
+                autoPlay: true,
+                enlargeCenterPage: true,
+                viewportFraction: 1.1, // thoda space dono sides me
+                autoPlayCurve: Curves.easeInOut,
+                autoPlayAnimationDuration: const Duration(seconds: 2),
+              ),
+              items: banners.map((path) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
-                ),
-              );
-            }).toList(),
-          ),
-
-          // CATEGORIES
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Categories", style: sectionTitleStyle),
-              TextButton(onPressed: () {}, child: const Text("View All")),
-            ],
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: 110,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: [
-                _categoryChip(
-                  "Gaming",
-                  Icons.sports_esports,
-                  Colors.deepPurple,
-                ),
-                _categoryChip("Business", Icons.work, Colors.blue),
-                _categoryChip("Student", Icons.school, Colors.green),
-                _categoryChip("2-in-1", Icons.tablet_mac, Colors.orange),
-                _categoryChip("Editing", Icons.video_call, Colors.red),
-                _categoryChip("Budget", Icons.attach_money, Colors.teal),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // TOP BRANDS
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Top Brands", style: sectionTitleStyle),
-              TextButton(onPressed: () {}, child: const Text("View All")),
-            ],
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: 80,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: brands.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 12),
-              itemBuilder: (context, i) {
-                final b = brands[i];
-                return _brandChip(b['name']!, b['img']!);
-              },
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // FEATURED PRODUCTS GRID (longer list)
-          Text("Featured Products", style: sectionTitleStyle),
-          const SizedBox(height: 10),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: featured.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 0.72,
-            ),
-            itemBuilder: (context, index) {
-              final p = featured[index];
-              return _productCard(p['title'], p['img'], p['price']);
-            },
-          ),
-          const SizedBox(height: 20),
-
-          // DEAL OF THE DAY (highlight)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Deal of the Day", style: sectionTitleStyle),
-              TextButton(onPressed: () {}, child: const Text("See all deals")),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Card(
-            color: const Color(0xFFF05105),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            elevation: 4,
-            child: Padding(
-              padding: const EdgeInsets.all(14),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 4,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Stack(
+                      fit: StackFit.expand,
                       children: [
-                        const Text(
-                          "MacBook Pro 14\"",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                        Image.asset(
+                          path,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            color: Colors.grey[300],
+                            child: const Icon(
+                              Icons.image,
+                              size: 60,
+                              color: Colors.grey,
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          "Save 20% - Limited time offer",
-                          style: TextStyle(color: Colors.white70),
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: const Color(0xFF062245),
-                              ),
-                              onPressed: () {},
-                              child: const Text("Buy Now"),
+                        // 🔹 Gradient overlay for elegant look
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.black.withOpacity(0.4),
+                                Colors.transparent,
+                                Colors.black.withOpacity(0.2),
+                              ],
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
                             ),
-                            const SizedBox(width: 12),
-                            Text(
-                              "Ends in:",
-                              style: TextStyle(color: Colors.white70),
-                            ),
-                            const SizedBox(width: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white24,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                dealTimerText,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    flex: 3,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        'assets/images/macbook.jpg',
-                        fit: BoxFit.cover,
-                        height: 110,
-                        errorBuilder: (_, __, ___) =>
-                            Container(color: Colors.grey[300]),
-                      ),
-                    ),
+                );
+              }).toList(),
+            ),
+
+            // CATEGORIES
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Categories", style: sectionTitleStyle),
+                TextButton(onPressed: () {}, child: const Text("View All")),
+              ],
+            ),
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 110,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  _categoryChip(
+                    "Gaming",
+                    Icons.sports_esports,
+                    Colors.deepPurple,
                   ),
+                  _categoryChip("Business", Icons.work, Colors.blue),
+                  _categoryChip("Student", Icons.school, Colors.green),
+                  _categoryChip("2-in-1", Icons.tablet_mac, Colors.orange),
+                  _categoryChip("Editing", Icons.video_call, Colors.red),
+                  _categoryChip("Budget", Icons.attach_money, Colors.teal),
                 ],
               ),
             ),
-          ),
-          const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-          // TRENDING HORIZONTAL
-          Text("Trending Now", style: sectionTitleStyle),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: 170,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: trending.length,
-              itemBuilder: (context, i) {
-                final t = trending[i];
-                return _trendingCard(t['title'], t['img'], t['price']);
+            // TOP BRANDS
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Top Brands", style: sectionTitleStyle),
+                TextButton(onPressed: () {}, child: const Text("View All")),
+              ],
+            ),
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 80,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: brands.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemBuilder: (context, i) {
+                  final b = brands[i];
+                  return _brandChip(b['name']!, b['img']!);
+                },
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // FEATURED PRODUCTS GRID (longer list)
+            Text("Featured Products", style: sectionTitleStyle),
+            const SizedBox(height: 10),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: featured.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 0.72,
+              ),
+              itemBuilder: (context, index) {
+                final p = featured[index];
+                return _productCard(p['title'], p['img'], p['price']);
               },
             ),
-          ),
-          const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-          // REVIEWS
-          Text("Customer Reviews", style: sectionTitleStyle),
-          const SizedBox(height: 10),
-          Column(
-            children: reviews.map((r) {
-              return Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                margin: const EdgeInsets.only(bottom: 10),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    child: Text(r['name'][0]),
-                    backgroundColor: const Color(0xFFF05105),
-                  ),
-                  title: Row(
-                    children: [
-                      Text(r['name']),
-                      const SizedBox(width: 8),
-                      _ratingStars(r['rating']),
-                    ],
-                  ),
-                  subtitle: Text(r['text']),
-                ),
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 20),
-
-          // PROMO BANNERS (horizontal)
-          SizedBox(
-            height: 90,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
+            // DEAL OF THE DAY (highlight)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _promoBanner(
-                  "Back to School Sale",
-                  "Up to 25% off",
-                  Colors.purple,
-                ),
-                _promoBanner(
-                  "Free Delivery",
-                  "On orders above \$500",
-                  Colors.teal,
-                ),
-                _promoBanner(
-                  "Student Discount",
-                  "Show ID & save",
-                  Colors.orange,
+                Text("Deal of the Day", style: sectionTitleStyle),
+                TextButton(
+                  onPressed: () {},
+                  child: const Text("See all deals"),
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 20),
-
-          // BLOG / ARTICLES
-          Text("From Our Blog", style: sectionTitleStyle),
-          const SizedBox(height: 10),
-          Column(
-            children: [
-              _blogCard(
-                "How to choose a laptop in 2025",
-                "assets/images/blog1.jpg",
+            const SizedBox(height: 8),
+            Card(
+              color: const Color(0xFFF05105),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
               ),
-              _blogCard(
-                "Top 10 laptops for students",
-                "assets/images/blog2.jpg",
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-
-          // NEWSLETTER
-          Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            color: Color(0xFFF05105),
-            elevation: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                children: [
-                  const Text(
-                    "Subscribe to our newsletter",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            hintText: "Enter your email",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(14),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "MacBook Pro 14\"",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            "Save 20% - Limited time offer",
+                            style: TextStyle(color: Colors.white70),
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: const Color(0xFF062245),
+                                ),
+                                onPressed: () {},
+                                child: const Text("Buy Now"),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                "Ends in:",
+                                style: TextStyle(color: Colors.white70),
+                              ),
+                              const SizedBox(width: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white24,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  dealTimerText,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 3,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(
+                          'assets/images/macbook.jpg',
+                          fit: BoxFit.cover,
+                          height: 110,
+                          errorBuilder: (_, __, ___) =>
+                              Container(color: Colors.grey[300]),
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: const Text("Subscribe"),
-                      ),
-                    ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // TRENDING HORIZONTAL
+            Text("Trending Now", style: sectionTitleStyle),
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 170,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: trending.length,
+                itemBuilder: (context, i) {
+                  final t = trending[i];
+                  return _trendingCard(t['title'], t['img'], t['price']);
+                },
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // REVIEWS
+            Text("Customer Reviews", style: sectionTitleStyle),
+            const SizedBox(height: 10),
+            Column(
+              children: reviews.map((r) {
+                return Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  margin: const EdgeInsets.only(bottom: 10),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      child: Text(r['name'][0]),
+                      backgroundColor: const Color(0xFFF05105),
+                    ),
+                    title: Row(
+                      children: [
+                        Text(r['name']),
+                        const SizedBox(width: 8),
+                        _ratingStars(r['rating']),
+                      ],
+                    ),
+                    subtitle: Text(r['text']),
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20),
+
+            // PROMO BANNERS (horizontal)
+            SizedBox(
+              height: 90,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  _promoBanner(
+                    "Back to School Sale",
+                    "Up to 25% off",
+                    Colors.purple,
+                  ),
+                  _promoBanner(
+                    "Free Delivery",
+                    "On orders above \$500",
+                    Colors.teal,
+                  ),
+                  _promoBanner(
+                    "Student Discount",
+                    "Show ID & save",
+                    Colors.orange,
                   ),
                 ],
               ),
             ),
-          ),
-          const SizedBox(height: 20),
-        ],
+            const SizedBox(height: 20),
+
+            // BLOG / ARTICLES
+            Text("From Our Blog", style: sectionTitleStyle),
+            const SizedBox(height: 10),
+            Column(
+              children: [
+                _blogCard(
+                  "How to choose a laptop in 2025",
+                  "assets/images/blog1.jpg",
+                ),
+                _blogCard(
+                  "Top 10 laptops for students",
+                  "assets/images/blog2.jpg",
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // NEWSLETTER
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              color: Color(0xFFF05105),
+              elevation: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  children: [
+                    const Text(
+                      "Subscribe to our newsletter",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: "Enter your email",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton(
+                          onPressed: () {},
+                          child: const Text("Subscribe"),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
+      bottomNavigationBar: BottomnavigationbarWidget(currentIndex: 0),
     );
   }
 
@@ -538,7 +551,9 @@ class _HomeContentState extends State<HomeContent> {
       elevation: 2,
       child: InkWell(
         onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductDetailScreen(),));
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => ProductDetailScreen()),
+          );
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

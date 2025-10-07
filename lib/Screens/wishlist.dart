@@ -10,9 +10,9 @@ class WishlistScreen extends StatefulWidget {
 class _WishlistScreenState extends State<WishlistScreen> {
   // Dummy wishlist items
   List<Map<String, dynamic>> wishlistItems = [
-    {"title": "Dell XPS 13", "price": 2200, "image": "https://via.placeholder.com/80"},
-    {"title": "MacBook Air", "price": 3200, "image": "https://via.placeholder.com/80"},
-    {"title": "HP Omen 16", "price": 1800, "image": "https://via.placeholder.com/80"},
+    {"title": "Dell XPS 13", "price": 2200, "image": "assets/products/lp1.png"},
+    {"title": "MacBook Air", "price": 3200, "image": "assets/products/lp2.png"},
+    {"title": "HP Omen 16", "price": 1800, "image": "assets/products/lp3.png"},
   ];
 
   @override

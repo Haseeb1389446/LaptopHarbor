@@ -11,9 +11,9 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   // Dummy cart items
   List<Map<String, dynamic>> cartItems = [
-    {"title": "Product 1", "price": 1200, "quantity": 1, "image": "https://via.placeholder.com/80"},
-    {"title": "Product 2", "price": 2500, "quantity": 2, "image": "https://via.placeholder.com/80"},
-    {"title": "Product 3", "price": 800, "quantity": 1, "image": "https://via.placeholder.com/80"},
+    {"title": "Product 1", "price": 1200, "quantity": 1, "image": "assets/products/lp1.png"},
+    {"title": "Product 2", "price": 2500, "quantity": 2, "image": "assets/products/lp2.png"},
+    {"title": "Product 3", "price": 800, "quantity": 1, "image": "assets/products/lp3.png"},
   ];
 
   /// 🧮 Calculate total price

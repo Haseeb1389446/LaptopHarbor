@@ -56,7 +56,7 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BottomnavigationbarWidget(currentIndex: 0),
+      bottomNavigationBar: BottomnavigationbarWidget(currentIndex: 3),
     );
   }
 

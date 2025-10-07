@@ -1,10 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:laptop_harbor/Screens/forgetpassword.dart';
+import 'package:laptop_harbor/Screens/home.dart';
 import 'package:laptop_harbor/Screens/signup.dart';
-import 'package:laptop_harbor/main.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  LoginScreen({super.key});
+
+  final formKey = GlobalKey<FormState>();
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +47,20 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 30),
 
-              // Email Field
-              TextField(
+            Form(
+              key: formKey,
+              child: Column(
+                children: [
+              TextFormField(
+                controller: emailController,
+                validator: (value){
+                  if (value!.isEmpty) {
+                    return "Email field must not be empty";
+                  } else if(!value.contains("@")) {
+                    return "Name field must contain @ symbol";
+                  }
+                  return null;
+                },
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.email, color: Color(0xFF062245)),
                   hintText: "Email",
@@ -60,7 +80,16 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Password Field
-              TextField(
+              TextFormField(
+                controller: passwordController,
+                validator: (value){
+                  if (value!.isEmpty) {
+                    return "Password field must not be empty";
+                  } else if(value.length < 8) {
+                    return "Name field must contain 8 characters";
+                  }
+                  return null;
+                },
                 obscureText: true,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.lock, color: Color(0xFF062245)),
@@ -79,6 +108,11 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
+                ],
+              )
+            ),
+
+              // Email Field
 
               // Forgot Password
               Align(
@@ -107,7 +141,15 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen(),));
+                    if (formKey.currentState!.validate()) {
+                      _auth.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text).then((res){
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen(),));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${emailController.text} has been logged Successfully")));
+                      }).catchError((err){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("THe Error is $err")));
+                      });
+                    passwordController.clear();
+                    }
                   },
                   child: const Text(
                     "Login",

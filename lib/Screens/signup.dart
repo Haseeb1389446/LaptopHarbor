@@ -46,9 +46,21 @@ class SignupScreen extends StatelessWidget {
               ),
               const SizedBox(height: 30),
 
+            Form(
+              key: formKey,
+              child: Column(
+                children: [
               // Full Name
-              TextField(
+              TextFormField(
                 controller: nameController,
+                validator: (value){
+                  if (value!.isEmpty) {
+                    return "Name field must not be empty";
+                  } else if(value.length < 3) {
+                    return "Name field must contain 3 characters";
+                  }
+                  return null;
+                },
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.person, color: Color(0xFF062245)),
                   hintText: "Full Name",
@@ -70,8 +82,16 @@ class SignupScreen extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Email
-              TextField(
+              TextFormField(
                 controller: emailController,
+                validator: (value){
+                  if (value!.isEmpty) {
+                    return "Email field must not be empty";
+                  } else if(!value.contains("@")) {
+                    return "Name field must contain @ symbol";
+                  }
+                  return null;
+                },
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.email, color: Color(0xFF062245)),
                   hintText: "Email",
@@ -93,8 +113,16 @@ class SignupScreen extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Password
-              TextField(
+              TextFormField(
                 controller: passwordController,
+                validator: (value){
+                  if (value!.isEmpty) {
+                    return "Password field must not be empty";
+                  } else if(value.length < 8) {
+                    return "Name field must contain 8 characters";
+                  }
+                  return null;
+                },
                 obscureText: true,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.lock, color: Color(0xFF062245)),
@@ -116,30 +144,6 @@ class SignupScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // Confirm Password
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  prefixIcon:
-                      const Icon(Icons.lock_outline, color: Color(0xFF062245)),
-                  hintText: "Confirm Password",
-                  filled: true,
-                  fillColor: Colors.grey.shade100,
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(
-                        color: Color(0xFFF05105), width: 2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-
               // Signup Button
               SizedBox(
                 width: double.infinity,
@@ -151,7 +155,29 @@ class SignupScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      _auth.createUserWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text.trim()).then((res) async {
+                        if (!(res.user == null)) {
+                          await res.user?.updateDisplayName(nameController.text.trim());
+                          await res.user?.reload();
+                          User? updatedUser = FirebaseAuth.instance.currentUser;
+                          print("User display name: ${updatedUser?.displayName}");
+                        }
+
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("User has been created Successfully")));
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen(),));
+                      });
+
+                    nameController.clear();
+                    emailController.clear();
+                    passwordController.clear();
+
+                      // print(nameController.text);
+                      // print(emailController.text);
+                      // print(passwordController.text);
+                    }
+                  },
                   child: const Text(
                     "Sign Up",
                     style: TextStyle(fontSize: 18, color: Colors.white),
@@ -159,6 +185,10 @@ class SignupScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
+              ],
+              ) 
+            ),
+
 
               // Already have account
               Row(
