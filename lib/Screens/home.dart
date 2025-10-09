@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:laptop_harbor/Screens/productdetails.dart';
@@ -77,40 +76,6 @@ class _HomeScreenState extends State<HomeScreen> {
     {'name': 'Omar', 'rating': 5, 'text': 'Excellent support from seller.'},
   ];
 
-  // Deal of the day (countdown)
-  late Duration _dealRemaining;
-  Timer? _dealTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    // Set deal to end in 6 hours from now (example)
-    _dealRemaining = const Duration(hours: 6);
-    _dealTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_dealRemaining.inSeconds <= 0) {
-        timer.cancel();
-        setState(() => _dealRemaining = Duration.zero);
-      } else {
-        setState(
-          () => _dealRemaining = _dealRemaining - const Duration(seconds: 1),
-        );
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _dealTimer?.cancel();
-    super.dispose();
-  }
-
-  String get dealTimerText {
-    final h = _dealRemaining.inHours.toString().padLeft(2, '0');
-    final m = (_dealRemaining.inMinutes % 60).toString().padLeft(2, '0');
-    final s = (_dealRemaining.inSeconds % 60).toString().padLeft(2, '0');
-    return "$h:$m:$s";
-  }
-
   // UI helpers
   TextStyle get sectionTitleStyle => const TextStyle(
     fontSize: 20,
@@ -133,8 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
               options: CarouselOptions(
                 height: 190,
                 autoPlay: true,
-                enlargeCenterPage: true,
-                viewportFraction: 1.1, // thoda space dono sides me
+                viewportFraction: 1, // thoda space dono sides me
                 autoPlayCurve: Curves.easeInOut,
                 autoPlayAnimationDuration: const Duration(seconds: 2),
               ),
@@ -316,28 +280,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: const Text("Buy Now"),
                               ),
                               const SizedBox(width: 12),
-                              Text(
-                                "Ends in:",
-                                style: TextStyle(color: Colors.white70),
-                              ),
-                              const SizedBox(width: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white24,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  dealTimerText,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
                             ],
                           ),
                         ],

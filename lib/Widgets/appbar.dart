@@ -117,7 +117,7 @@ class AppDrawer extends StatelessWidget {
             title: const Text("Logout", style: TextStyle(color: Colors.red)),
             onTap: () {
               _auth.signOut().then((res){
-               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${user?.displayName} logout successfully")));
+               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("logout successfully")));
               Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen(),));
               }).catchError((err){
                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("The Error is $err")));
