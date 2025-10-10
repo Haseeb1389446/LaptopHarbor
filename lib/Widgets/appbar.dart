@@ -54,7 +54,7 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final User? user = _auth.currentUser;
+  // final User? user = _auth.currentUser;
     return Drawer(
       clipBehavior: Clip.none,
       child: ListView(

@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:laptop_harbor/Screens/productdetails.dart';
 import 'package:laptop_harbor/Widgets/appbar.dart';
@@ -208,24 +209,101 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 20),
 
-            // FEATURED PRODUCTS GRID (longer list)
-            Text("Featured Products", style: sectionTitleStyle),
-            const SizedBox(height: 10),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: featured.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.72,
-              ),
-              itemBuilder: (context, index) {
-                final p = featured[index];
-                return _productCard(p['title'], p['img'], p['price']);
-              },
+            // 🔹 FEATURED PRODUCTS (from Firebase)
+Text("Featured Products", style: sectionTitleStyle),
+const SizedBox(height: 10),
+StreamBuilder<QuerySnapshot>(
+  stream: FirebaseFirestore.instance
+      .collection('products')
+      .limit(6) // ✅ Only first 6 products
+      .snapshots(),
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+      return const Text("No featured products available.");
+    }
+
+    final products = snapshot.data!.docs;
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: products.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        childAspectRatio: 0.72,
+      ),
+      itemBuilder: (context, index) {
+        final data = products[index].data() as Map<String, dynamic>;
+        final docId = products[index].id;
+
+        return Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 3,
+          child: InkWell(
+            onTap: () {
+              // 🔹 Navigate to Product Detail with data
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ProductDetailScreen(
+                    productId: docId,
+                    productData: data,
+                  ),
+                ),
+              );
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(12),
+                    ),
+                    child: Image.asset(
+                      "assets/products/${data['image']}",
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data['name'],
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text("Rs. ${data['price']}"),
+                      Row(
+                        children: [
+                          const Icon(Icons.star,
+                              color: Colors.amber, size: 16),
+                          Text('${data['rating']}'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
+          ),
+        );
+      },
+    );
+  },
+),
+
             const SizedBox(height: 20),
 
             // DEAL OF THE DAY (highlight)
@@ -487,56 +565,56 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _productCard(String title, String imgPath, double price) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 2,
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => ProductDetailScreen()),
-          );
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(12),
-                ),
-                child: Image.asset(
-                  imgPath,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  errorBuilder: (_, __, ___) =>
-                      Container(color: Colors.grey[200]),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                title,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                "\$${price.toStringAsFixed(2)}",
-                style: const TextStyle(
-                  color: Color(0xFFF05105),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _productCard(String title, String imgPath, double price) {
+  //   return Card(
+  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+  //     elevation: 2,
+  //     child: InkWell(
+  //       onTap: () {
+  //         Navigator.of(context).push(
+  //           MaterialPageRoute(builder: (context) => ProductDetailScreen()),
+  //         );
+  //       },
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Expanded(
+  //             child: ClipRRect(
+  //               borderRadius: const BorderRadius.vertical(
+  //                 top: Radius.circular(12),
+  //               ),
+  //               child: Image.asset(
+  //                 imgPath,
+  //                 fit: BoxFit.cover,
+  //                 width: double.infinity,
+  //                 errorBuilder: (_, __, ___) =>
+  //                     Container(color: Colors.grey[200]),
+  //               ),
+  //             ),
+  //           ),
+  //           Padding(
+  //             padding: const EdgeInsets.all(8.0),
+  //             child: Text(
+  //               title,
+  //               style: const TextStyle(fontWeight: FontWeight.w600),
+  //             ),
+  //           ),
+  //           Padding(
+  //             padding: const EdgeInsets.symmetric(horizontal: 8.0),
+  //             child: Text(
+  //               "\$${price.toStringAsFixed(2)}",
+  //               style: const TextStyle(
+  //                 color: Color(0xFFF05105),
+  //                 fontWeight: FontWeight.bold,
+  //               ),
+  //             ),
+  //           ),
+  //           const SizedBox(height: 8),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _trendingCard(String title, String imgPath, double price) {
     return Container(

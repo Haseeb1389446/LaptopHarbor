@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:laptop_harbor/Screens/brands.dart';
 import 'package:laptop_harbor/Screens/cart.dart';
 import 'package:laptop_harbor/Screens/home.dart';
+import 'package:laptop_harbor/Screens/productlisting.dart';
 import 'package:laptop_harbor/Screens/profile.dart';
 
 class BottomnavigationbarWidget extends StatelessWidget {
@@ -12,7 +13,7 @@ class BottomnavigationbarWidget extends StatelessWidget {
 
   static final List<Widget> screens = [
     const HomeScreen(),
-    const BrandsScreen(),
+    const ProductListingScreen(),
     const CartScreen(),
     const ProfileScreen(),
   ];
@@ -34,7 +35,7 @@ class BottomnavigationbarWidget extends StatelessWidget {
       },
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.branding_watermark_outlined), label: 'category'),
+        BottomNavigationBarItem(icon: Icon(CupertinoIcons.device_laptop), label: 'Products'),
         BottomNavigationBarItem(icon: Icon(CupertinoIcons.cart), label: 'Cart'),
         BottomNavigationBarItem(icon: Icon(CupertinoIcons.profile_circled), label: 'Profile'),
       ],
