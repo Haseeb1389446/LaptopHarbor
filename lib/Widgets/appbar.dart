@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:laptop_harbor/Screens/cart.dart';
 import 'package:laptop_harbor/Screens/login.dart';
 import 'package:laptop_harbor/Screens/order.dart';
+import 'package:laptop_harbor/Screens/productlisting.dart';
 import 'package:laptop_harbor/Screens/profile.dart';
-import 'package:laptop_harbor/Screens/search.dart';
 import 'package:laptop_harbor/Screens/setting.dart';
 import 'package:laptop_harbor/Screens/wishlist.dart';
 
@@ -29,7 +29,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: const Icon(Icons.search, color: Color(0xFF062245)),
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchScreen(),));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductListingScreen(),));
           },
         ),
         IconButton(
@@ -85,14 +85,14 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.shopping_cart),
             title: const Text("Cart"),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CartScreen(),));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CartScreen(items: [],),));
             },
           ),
           ListTile(
             leading: const Icon(Icons.favorite),
             title: const Text("Wishlist"),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => WishlistScreen(),));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => WishlistScreen(items: [],),));
             },
           ),
           ListTile(

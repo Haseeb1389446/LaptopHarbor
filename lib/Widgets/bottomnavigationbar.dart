@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:laptop_harbor/Screens/brands.dart';
 import 'package:laptop_harbor/Screens/cart.dart';
 import 'package:laptop_harbor/Screens/home.dart';
 import 'package:laptop_harbor/Screens/productlisting.dart';
@@ -14,7 +13,7 @@ class BottomnavigationbarWidget extends StatelessWidget {
   static final List<Widget> screens = [
     const HomeScreen(),
     const ProductListingScreen(),
-    const CartScreen(),
+    const CartScreen(items: [],),
     const ProfileScreen(),
   ];
 

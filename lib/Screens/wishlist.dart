@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:laptop_harbor/Widgets/bottomnavigationbar.dart';
 
 class WishlistScreen extends StatefulWidget {
-  const WishlistScreen({super.key});
+  final List<Map<String, dynamic>> items;
+
+  const WishlistScreen({super.key, required this.items});
 
   @override
   State<WishlistScreen> createState() => _WishlistScreenState();
 }
 
 class _WishlistScreenState extends State<WishlistScreen> {
-  // Dummy wishlist items
-  List<Map<String, dynamic>> wishlistItems = [
-    {"title": "Dell XPS 13", "price": 2200, "image": "assets/products/lp1.png"},
-    {"title": "MacBook Air", "price": 3200, "image": "assets/products/lp2.png"},
-    {"title": "HP Omen 16", "price": 1800, "image": "assets/products/lp3.png"},
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,74 +20,50 @@ class _WishlistScreenState extends State<WishlistScreen> {
         title: const Text("My Wishlist"),
         centerTitle: true,
         foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: wishlistItems.isEmpty
+      body: widget.items.isEmpty
           ? const Center(
               child: Text(
-                "Your Wishlist is Empty",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                "No items in wishlist ❤️",
+                style: TextStyle(fontSize: 16, color: Colors.black54),
               ),
             )
           : ListView.builder(
-              padding: const EdgeInsets.all(12),
-              itemCount: wishlistItems.length,
+              padding: const EdgeInsets.all(10),
+              itemCount: widget.items.length,
               itemBuilder: (context, index) {
-                var item = wishlistItems[index];
+                var item = widget.items[index];
                 return Card(
-                  margin: const EdgeInsets.symmetric(vertical: 8),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
+                  elevation: 3,
+                  margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                   child: ListTile(
-                    contentPadding:
-                        const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    contentPadding: const EdgeInsets.all(10),
                     leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.network(item["image"],
-                          width: 70, height: 70, fit: BoxFit.cover),
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(item["image"], width: 60, height: 60, fit: BoxFit.cover),
                     ),
                     title: Text(item["title"],
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16)),
-                    subtitle: Text("Rs. ${item["price"]}",
-                        style: const TextStyle(
-                            fontSize: 14, color: Colors.black54)),
-                    trailing: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        /// ❤️ Remove button
-                        IconButton(
-                          icon: const Icon(Icons.favorite, color: Colors.red),
-                          onPressed: () {
-                            setState(() {
-                              wishlistItems.removeAt(index);
-                            });
-                          },
-                        ),
-                        /// 🛒 Move to cart
-                        InkWell(
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(
-                                      "${item["title"]} moved to Cart ✅")),
-                            );
-                          },
-                          child: const Text(
-                            "Move to Cart",
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFFF05105),
-                                fontWeight: FontWeight.w600),
-                          ),
-                        )
-                      ],
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    subtitle: Text(
+                      "Rs. ${item["price"]}",
+                      style: const TextStyle(color: Colors.black54),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                      onPressed: () {
+                        setState(() {
+                          widget.items.removeAt(index);
+                        });
+                      },
                     ),
                   ),
                 );
               },
             ),
+      bottomNavigationBar: BottomnavigationbarWidget(currentIndex: 3),
     );
   }
 }
