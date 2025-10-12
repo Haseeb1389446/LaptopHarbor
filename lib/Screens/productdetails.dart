@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -16,8 +17,30 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
-  List<Map<String, dynamic>> cartItems = [];
-  List<Map<String, dynamic>> wishlistItems = [];
+  final _firestore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
+
+  Future<void> addToCollection(String type, Map<String, dynamic> product) async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please login first")),
+      );
+      return;
+    }
+
+    await _firestore.collection(type).add({
+      'userid': user.uid,
+      'productid': widget.productId,
+      'name': product['name'],
+      'price': product['price'],
+      'image': product['image'],
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("${product['name']} added to $type ✅")),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,8 +129,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 const SizedBox(height: 18),
                 Text(
                   data['description'] ?? "No description available.",
-                  style:
-                      const TextStyle(fontSize: 16, color: Colors.black87, height: 1.5),
+                  style: const TextStyle(
+                      fontSize: 16, color: Colors.black87, height: 1.5),
                 ),
                 const SizedBox(height: 25),
 
@@ -116,20 +139,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   children: [
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed: () {
-                          setState(() {
-                            cartItems.add({
-                              "title": data['name'],
-                              "price": data['price'],
-                              "quantity": 1,
-                              "image": "assets/products/${data['image']}",
-                            });
-                          });
-
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("${data['name']} added to Cart ✅"),
-                          ));
-                        },
+                        onPressed: () => addToCollection('cart', {
+                          'name': data['name'],
+                          'price': data['price'],
+                          'image': data['image'],
+                        }),
                         icon: const Icon(Icons.shopping_cart_outlined),
                         label: const Text("Add to Cart"),
                         style: ElevatedButton.styleFrom(
@@ -144,19 +158,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed: () {
-                          setState(() {
-                            wishlistItems.add({
-                              "title": data['name'],
-                              "price": data['price'],
-                              "image": "assets/products/${data['image']}",
-                            });
-                          });
-
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("${data['name']} added to Wishlist ❤️"),
-                          ));
-                        },
+                        onPressed: () => addToCollection('wishlist', {
+                          'name': data['name'],
+                          'price': data['price'],
+                          'image': data['image'],
+                        }),
                         icon: const Icon(Icons.favorite_border),
                         label: const Text("Wishlist"),
                         style: ElevatedButton.styleFrom(

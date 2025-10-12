@@ -85,14 +85,14 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.shopping_cart),
             title: const Text("Cart"),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CartScreen(items: [],),));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CartScreen(),));
             },
           ),
           ListTile(
             leading: const Icon(Icons.favorite),
             title: const Text("Wishlist"),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => WishlistScreen(items: [],),));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => WishlistScreen(),));
             },
           ),
           ListTile(

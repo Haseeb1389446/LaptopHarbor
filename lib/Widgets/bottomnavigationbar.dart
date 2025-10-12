@@ -13,7 +13,7 @@ class BottomnavigationbarWidget extends StatelessWidget {
   static final List<Widget> screens = [
     const HomeScreen(),
     const ProductListingScreen(),
-    const CartScreen(items: [],),
+    const CartScreen(),
     const ProfileScreen(),
   ];
 
