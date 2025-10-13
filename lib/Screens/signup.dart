@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:laptop_harbor/Screens/login.dart';
@@ -12,6 +13,7 @@ class SignupScreen extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -155,29 +157,50 @@ class SignupScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () {
-                    if (formKey.currentState!.validate()) {
-                      _auth.createUserWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text.trim()).then((res) async {
-                        if (!(res.user == null)) {
-                          await res.user?.updateDisplayName(nameController.text.trim());
-                          await res.user?.reload();
-                          User? updatedUser = FirebaseAuth.instance.currentUser;
-                          print("User display name: ${updatedUser?.displayName}");
-                        }
+onPressed: () async {
+  if (formKey.currentState!.validate()) {
+    try {
+      // Firebase Auth Signup
+      UserCredential userCred = await _auth.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
 
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("User has been created Successfully")));
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen(),));
-                      });
+      User? user = userCred.user;
 
-                    nameController.clear();
-                    emailController.clear();
-                    passwordController.clear();
+      // Firestore me user data save karo
+      await _firestore.collection('users').doc(user!.uid).set({
+        'userid': user.uid,
+        'username': nameController.text.trim(),
+        'email1': emailController.text.trim(),
+        'userimage': '',
+        'cartcount': 0,
+        'wishlistcount': 0,
+        'ordercount': 0,
+      });
 
-                      // print(nameController.text);
-                      // print(emailController.text);
-                      // print(passwordController.text);
-                    }
-                  },
+      // Success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("User created successfully!")),
+      );
+
+      // Redirect to Login Screen
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+
+      // Fields clear karo
+      nameController.clear();
+      emailController.clear();
+      passwordController.clear();
+
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message ?? "Signup failed")),
+      );
+    }
+  }
+},
                   child: const Text(
                     "Sign Up",
                     style: TextStyle(fontSize: 18, color: Colors.white),

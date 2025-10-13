@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:laptop_harbor/Screens/cart.dart';
@@ -47,14 +48,44 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 }
 
 /// ✅ Drawer Widget (Menu)
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
  AppDrawer({super.key});
 
+  @override
+  State<AppDrawer> createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  String userName = "User";
+
+  String userEmail = "example@email.com";
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserData();
+  }
+
+  Future<void> loadUserData() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final doc =
+          await _firestore.collection('users').doc(user.uid).get();
+      if (doc.exists) {
+        setState(() {
+          userName = doc['username'] ?? "User";
+          userEmail = doc['email1'] ?? "No Email";
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-  // final User? user = _auth.currentUser;
     return Drawer(
       clipBehavior: Clip.none,
       child: ListView(
@@ -63,10 +94,8 @@ class AppDrawer extends StatelessWidget {
           // 🔹 Drawer Header
           UserAccountsDrawerHeader(
             decoration: const BoxDecoration(color: Color(0xFF062245)),
-            // accountName: Text(user?.displayName ?? "No Name" , style: TextStyle(fontSize: 18)),
-            // accountEmail: Text(user?.email ?? "No Email"),
-            accountName: Text("Abdul Haseeb"),
-            accountEmail: Text("haseeb@gmail.com"),
+            accountName: Text(userName),
+            accountEmail: Text(userEmail),
             currentAccountPicture: const CircleAvatar(
               backgroundColor: Colors.white,
               child: Icon(Icons.person, size: 40, color: Color(0xFF062245)),
