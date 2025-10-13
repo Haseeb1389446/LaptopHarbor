@@ -19,7 +19,7 @@ class WishlistScreen extends StatelessWidget {
 
     final Stream<QuerySnapshot> wishlistStream = FirebaseFirestore.instance
         .collection('wishlist')
-        .where('userId', isEqualTo: user.uid)
+        .where('userid', isEqualTo: user.uid)
         .snapshots();
 
     return Scaffold(
